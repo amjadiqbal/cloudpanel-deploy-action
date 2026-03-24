@@ -1,5 +1,5 @@
 name: 'Deploy to CloudPanel'
-description: 'Deploy code to CloudPanel sites securely via SSH. specific for CloudPanel file structures and permissions.'
+description: 'Deploy code to CloudPanel sites using rsync. Merges latest code without requiring git on the server.'
 author: 'amjadiqbal'
 branding:
   icon: 'cloud'
@@ -10,39 +10,52 @@ inputs:
     description: 'CloudPanel Server IP Address'
     required: true
   user:
-    description: 'CloudPanel Site User (e.g., "john" or "site-user")'
+    description: 'CloudPanel Site User'
     required: true
   key:
-    description: 'SSH Private Key (Store in Repository Secrets)'
+    description: 'SSH Private Key'
     required: true
   working_dir:
-    description: 'Absolute path to the site root (e.g., /home/site-user/htdocs/domain.com)'
+    description: 'Absolute path on server (e.g., /home/user/htdocs/://domain.com)'
     required: true
   script:
-    description: 'Deployment commands to execute'
+    description: 'Optional post-deploy commands (e.g., npm install)'
     required: false
-    default: |
-      git pull origin main
-      # Uncomment below if using CloudPanel's zero-downtime tool:
-      # dploy deploy
-  port:
-    description: 'SSH Port'
-    required: false
-    default: '22'
+    default: ''
 
 runs:
   using: "composite"
   steps:
-    - name: Execute Remote SSH Deployment
-      uses: appleboy/ssh-action@v1.0.0
+    - name: Install Dependencies
+      shell: bash
+      run: |
+        if ! command -v rsync >/dev/null 2>&1; then
+          echo "Installing rsync..."
+          sudo apt-get update && sudo apt-get install -y rsync
+        fi
+
+    - name: Setup SSH Key
+      shell: bash
+      run: |
+        mkdir -p ~/.ssh
+        echo "${{ inputs.key }}" > ~/.ssh/id_rsa
+        chmod 600 ~/.ssh/id_rsa
+        ssh-keyscan -H ${{ inputs.host }} >> ~/.ssh/known_hosts
+
+    - name: Rsync Files to CloudPanel
+      shell: bash
+      run: |
+        # Using -rlptgoD (archive without -px) to avoid permission issues on some servers
+        # Added --exclude to prevent syncing git history to production
+        rsync -avz --exclude='.git/' -e "ssh -i ~/.ssh/id_rsa" ./ ${{ inputs.user }}@${{ inputs.host }}:${{ inputs.working_dir }}
+
+    - name: Run Post-Deploy Script
+      uses: appleboy/ssh-action@v1.0.3 # Updated to latest version
+      if: ${{ inputs.script != '' }}
       with:
         host: ${{ inputs.host }}
         username: ${{ inputs.user }}
         key: ${{ inputs.key }}
-        port: ${{ inputs.port }}
         script: |
-          # Navigate to site directory
           cd ${{ inputs.working_dir }}
-          
-          # Execute user-defined scripts
           ${{ inputs.script }}
