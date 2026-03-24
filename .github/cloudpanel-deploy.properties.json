@@ -1,0 +1,6 @@
+{
+  "name": "CloudPanel Deployment",
+  "description": "Automatically deploy your code to a CloudPanel server.",
+  "iconName": "cloud",
+  "categories": ["Deployment"]
+}
