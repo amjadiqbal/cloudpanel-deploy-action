@@ -30,3 +30,36 @@ You can extend the `script` input to run any commands specific to your app:
             composer install --no-dev
             php artisan migrate --force
             php artisan optimize
+```
+
+### 2. Auto-Generation: Setting up the Starter Workflow
+To make GitHub suggest and "auto-generate" your workflow for users, follow these steps in your repository:
+
+1. Create a folder named `.github/workflow-templates` at the root of your action repo.
+2. Inside that folder, create `cloudpanel-deploy.yml`:
+   ```yaml
+   name: CloudPanel Deploy
+   on:
+     push:
+       branches: [ $default-branch ]
+   jobs:
+     deploy:
+       runs-on: ubuntu-latest
+       steps:
+         - uses: actions/checkout@v4
+         - uses: amjadiqbal/cloudpanel-deploy-action@v1
+           with:
+             host: ${{ secrets.CLOUDPANEL_HOST }}
+             user: 'site-user'
+             key: ${{ secrets.CLOUDPANEL_SSH_KEY }}
+             working_dir: '/home/site-user/htdocs/example.com'
+   ```
+3. Create a metadata file cloudpanel-deploy.properties.json in the same folder:
+   ```json
+   {
+     "name": "CloudPanel Deployment",
+     "description": "Automatically deploy your code to a CloudPanel server.",
+     "iconName": "cloud",
+     "categories": ["Deployment"]
+   }
+   ```
