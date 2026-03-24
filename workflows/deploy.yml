@@ -1,0 +1,16 @@
+name: Deploy Site
+on: [push]
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: your-username/cloudpanel-deploy-action@v1
+        with:
+          host: ${{ secrets.CLOUDPANEL_HOST }}    # Server IP
+          user: 'site-user'                       # The user managing the site
+          key: ${{ secrets.CLOUDPANEL_SSH_KEY }}  # Private Key
+          working_dir: '/home/site-user/htdocs/example.com'
+          script: |
+            git pull origin main
+            npm install
+            npm run build
