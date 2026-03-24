@@ -43,7 +43,7 @@ Unlike standard git-based tools, this action uses **rsync** to sync your code.
 ### Customizing Your Script
 You can extend the `script` input to run any commands specific to your app:
 ```yaml
-- uses: amjadiqbal/cloudpanel-deploy-action@v1
+- uses: amjadiqbal/cloudpanel-deploy-action@main
   with:
     host: ${{ secrets.CLOUDPANEL_HOST }}
     script: |
