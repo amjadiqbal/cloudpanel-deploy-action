@@ -1,0 +1,39 @@
+name: 'Deploy to CloudPanel'
+description: 'Easily deploy code to a CloudPanel site via SSH'
+author: 'YourName'
+branding:
+  icon: 'upload-cloud'  # See branding suggestions below
+  color: 'blue'
+
+inputs:
+  host:
+    description: 'CloudPanel Server IP Address'
+    required: true
+  user:
+    description: 'CloudPanel Site User (e.g., my-site-user)'
+    required: true
+  key:
+    description: 'SSH Private Key (Add to Repository Secrets)'
+    required: true
+  working_dir:
+    description: 'Path to site (e.g., /home/user/htdocs/domain.com)'
+    required: true
+  script:
+    description: 'Commands to run (e.g., git pull, npm install)'
+    required: false
+    default: |
+      git pull origin main
+      # Add restart commands if needed, e.g., pm2 restart all
+
+runs:
+  using: "composite"
+  steps:
+    - name: Execute Remote SSH Commands
+      uses: appleboy/ssh-action@v1.0.0
+      with:
+        host: ${{ inputs.host }}
+        username: ${{ inputs.user }}
+        key: ${{ inputs.key }}
+        script: |
+          cd ${{ inputs.working_dir }}
+          ${{ inputs.script }}
