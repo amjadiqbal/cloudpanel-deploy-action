@@ -16,7 +16,7 @@ inputs:
     description: 'SSH Private Key'
     required: true
   working_dir:
-    description: 'Absolute path on server (e.g., /home/user/htdocs/://domain.com)'
+    description: 'Absolute path on server (e.g., /home/user/htdocs/domain.com)'
     required: true
   script:
     description: 'Optional post-deploy commands (e.g., npm install)'
