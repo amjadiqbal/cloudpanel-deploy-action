@@ -1,3 +1,10 @@
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="art/banner-dark.png">
+    <img alt="CloudPanel Deploy Action — deploy PHP, Node.js and Python apps over SSH from GitHub Actions" src="art/banner-light.png" width="100%">
+  </picture>
+</p>
+
 # CloudPanel Deploy Action 🚀
 
 Deploy to your [CloudPanel](https://www.cloudpanel.io) sites instantly. This action automates the SSH connection, directory navigation, and execution of your deployment scripts.
@@ -52,3 +59,25 @@ You can extend the `script` input to run any commands specific to your app:
       php artisan migrate --force
       php artisan optimize
 ```
+
+## Support
+
+- 🐛 **Bug or feature request** — [open an issue](https://github.com/amjadiqbal/cloudpanel-deploy-action/issues)
+- 🔒 **Security issue** — please report privately via GitHub's security tab
+
+## Need this customised, or something built?
+
+I'm available for custom development, deployment pipelines, package integration, and technical consulting.
+
+[![Hire me on Upwork](https://img.shields.io/badge/Hire%20me-Upwork-6FDA44?style=flat-square&logo=upwork&logoColor=white)](https://www.upwork.com/freelancers/amjadkhatri)
+
+For priority support and custom deployment setups, please reach out via Upwork for direct assistance.
+
+## More packages
+
+Part of a family of open-source packages — see [all of them](https://github.com/amjadiqbal?tab=repositories).
+
+| | |
+|---|---|
+| [kiln](https://github.com/amjadiqbal/kiln) | Deploy-time OPcache control for Laravel |
+| [laravel-logpulse](https://github.com/amjadiqbal/laravel-logpulse) | Log health monitoring & alerting for Laravel |
